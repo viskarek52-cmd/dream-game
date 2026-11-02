@@ -222,7 +222,6 @@ footer{text-align:center;color:#666477;font-size:11px;padding:35px}
   <h2>🔥 Горячие предложения</h2>
   <span class="muted">Обновляются каждый день</span>
  </div>
- <p class="catalog-note">📱 Каталог: 200 реальных моделей Apple, Samsung, Xiaomi, Google, OnePlus, Motorola, Sony и Huawei/Honor. Фото ищутся в Wikimedia Commons.</p>
  <div class="grid" id="marketGrid"></div>
 </main>
 
@@ -640,23 +639,75 @@ async function findCommonsPhoneImage(name){
  return result;
 }
 function loadPhonePhoto(phone){
- const img=document.getElementById("phoneimg-"+phone.id);
- const ph=document.getElementById("phoneph-"+phone.id);
- const credit=document.getElementById("phonecredit-"+phone.id);
- if(!img||!ph)return;
- const show=data=>{
-   if(!data||!data.url){ph.textContent="Фото этой модели не найдено";return;}
-   img.onload=()=>{img.style.display="block";ph.style.display="none";if(credit&&data.page){credit.href=data.page;credit.style.display="block";}};
-   img.onerror=()=>{ph.textContent="Фото временно недоступно";};
-   img.src=data.url;
- };
- if(phone.imageUrl){show({url:phone.imageUrl,page:phone.imagePage});return;}
- findCommonsPhoneImage(phone.name).then(data=>{
-   if(data){phone.imageUrl=data.url;phone.imagePage=data.page;show(data);}
-   else show(null);
- });
-}
+ const img = document.getElementById("phoneimg-" + phone.id);
+ const ph = document.getElementById("phoneph-" + phone.id);
 
+ if(!img || !ph) return;
+
+ const name = phone.name.toLowerCase();
+
+ const photos = [
+  {
+   match: "iphone 13",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_13.jpg"
+  },
+  {
+   match: "iphone 14",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_14_20240225.jpg"
+  },
+  {
+   match: "iphone 15",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_iPhone_15.jpg"
+  },
+  {
+   match: "iphone 16",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_16_Pro_series.jpg"
+  },
+  {
+   match: "samsung galaxy s22",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/SamsungGalaxyS22.png"
+  },
+  {
+   match: "samsung galaxy s23",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Galaxy_s23.jpg"
+  },
+  {
+   match: "samsung galaxy s24",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Samsung_Galaxy_S24.jpg"
+  },
+  {
+   match: "xiaomi 13",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Xiaomi_13_front.jpg"
+  },
+  {
+   match: "google pixel 8",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Google_Pixel_8_back_%28Obsidian%29.svg"
+  },
+  {
+   match: "huawei p30 pro",
+   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Huawei_P30_Pro.jpg"
+  }
+ ];
+
+ const found = photos.find(item => name.includes(item.match));
+
+ if(!found){
+  ph.textContent = "Фото скоро появится";
+  return;
+ }
+
+ img.onload = () => {
+  img.style.display = "block";
+  ph.style.display = "none";
+ };
+
+ img.onerror = () => {
+  ph.textContent = "Фото недоступно";
+ };
+
+ img.src = found.url;
+};
+}
 function card(p,mode){
  let html=`<div class="phone">
  <div class="phone-art photo-art"><span class="tag">${p.condition}</span><img class="phone-photo" id="phoneimg-${p.id}" alt="${p.name}" loading="lazy"><span class="photo-placeholder" id="phoneph-${p.id}">Ищем реальное фото…</span></div>
