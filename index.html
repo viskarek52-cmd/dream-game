@@ -582,7 +582,7 @@ function createMarket(){
   });
  }
 }
-
+state.workshopJobs = state.workshopJobs || [];
 function update(){
  document.getElementById("balance").textContent=money(state.money);
  document.getElementById("capital").textContent=money(state.money);
