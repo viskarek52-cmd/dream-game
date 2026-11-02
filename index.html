@@ -525,12 +525,48 @@ function save(){
 function money(n){return Math.round(n).toLocaleString("ru-RU")+" ₽"}
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 
-function createMarket(){
+  function generateDefects(battery){
+ const problems = [
+  "🔋 Требуется замена аккумулятора",
+  "📱 Требуется замена экрана",
+  "📸 Неисправна основная камера",
+  "🤳 Неисправна фронтальная камера",
+  "🔌 Не работает разъём зарядки",
+  "🔊 Неисправен динамик",
+  "🎤 Не работает микрофон",
+  "🔘 Неисправны кнопки",
+  "📡 Проблемы с сетью",
+  "⚡ Неисправна материнская плата",
+  "💧 Следы попадания влаги"
+ ];
+
+ let count = Math.random() < 0.45 ? 0 :
+             Math.random() < 0.75 ? 1 :
+             Math.random() < 0.9 ? 2 : 3;
+
+ let defects = [];
+
+ if(battery < 65){
+  defects.push("🔋 Требуется замена аккумулятора");
+ }
+
+ while(defects.length < count){
+  let problem = problems[rand(0,problems.length-1)];
+  if(!defects.includes(problem)){
+   defects.push(problem);
+  }
+ }
+
+ return defects;
+}
+function createMarket(){                      
  state.market=[];
  for(let i=0;i<6;i++){
   let p=initialPhones[rand(0,initialPhones.length-1)];
   let discount=rand(70,105)/100;
   let risk=rand(1,100);
+   let battery=rand(35,100);
+   let defects=generateDefects(battery);
   state.market.push({
    id:Date.now()+i+rand(0,99999),
    name:p[0],
@@ -538,9 +574,9 @@ function createMarket(){
    imagePage:null,
    price:Math.round(p[1]*discount),
    value:p[2],
-   battery:rand(65,100),
+   battery:battery,
    condition:p[4],
-   defects:risk>84?["Неисправная камера","Проблема с экраном","Слабый аккумулятор"][rand(0,2)]:null,
+   defects:defects.length ? defects : null,
    locked:risk>96,
    seller:["Александр","Максим","Дмитрий","Артём","Илья"][rand(0,4)]
   });
