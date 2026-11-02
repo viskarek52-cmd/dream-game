@@ -601,7 +601,7 @@ function update(){
  document.getElementById("workshopLevel").textContent=state.workshopLevel;
  document.getElementById("repairsDone").textContent=state.repairsDone;
  document.getElementById("partsCount").textContent=state.partsStock;
- document.getElementById("jobsCount").textContent=state.workshopJobs.length;
+ document.getElementById("jobsCount").textContent=(state.workshopJobs || []).length;
  document.getElementById("profileName").textContent=
   state.xp>=500?"Магнат ресейла":state.xp>=200?"Опытный перекуп":"Начинающий перекуп";
  renderMarket();renderInventory();renderShop();renderWorkshop();
