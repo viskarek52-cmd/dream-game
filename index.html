@@ -843,7 +843,7 @@ function upgradeWorkshop(){
  state.money-=cost;state.workshopLevel++;save();notify("Мастерская улучшена до уровня "+state.workshopLevel+"!");
 }
 
-function showTab(tab,btn){
+window.showTab = function(tab,btn){
  document.querySelectorAll("main").forEach(x=>x.classList.add("hidden"));
  document.getElementById(tab).classList.remove("hidden");
  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
