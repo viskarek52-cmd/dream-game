@@ -538,7 +538,59 @@ function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
   "📡 Проблемы с сетью",
   "⚡ Неисправна материнская плата",
   "💧 Следы попадания влаги"
- ];
+ ];function getPhoneParts(phone){
+    const defects = phone.defects || [];
+    const parts = [];
+
+    const catalog = [
+        {match:"аккумулятор",type:"battery",name:"Аккумулятор"},
+        {match:"экран",type:"screen",name:"Дисплей"},
+        {match:"камера",type:"camera",name:"Камера"},
+        {match:"разъём зарядки",type:"charging",name:"Разъём зарядки"},
+        {match:"динамик",type:"speaker",name:"Динамик"},
+        {match:"микрофон",type:"microphone",name:"Микрофон"},
+        {match:"кнопки",type:"buttons",name:"Кнопки"},
+        {match:"сетью",type:"network",name:"Модуль связи"},
+        {match:"материнская плата",type:"board",name:"Материнская плата"},
+        {match:"влаги",type:"water",name:"Восстановление после влаги"}
+    ];
+
+    const name = phone.name.toLowerCase();
+
+    let multiplier = 1;
+    if(name.includes("iphone")) multiplier = 1.8;
+    else if(name.includes("samsung")) multiplier = 1.5;
+    else if(name.includes("huawei")) multiplier = 1.3;
+    else if(name.includes("xiaomi")) multiplier = 1.1;
+
+    const prices = {
+        battery:2500,
+        screen:6000,
+        camera:4000,
+        charging:1500,
+        speaker:1200,
+        microphone:1000,
+        buttons:900,
+        network:3500,
+        board:8000,
+        water:3000
+    };
+
+    defects.forEach(defect=>{
+        const text = defect.toLowerCase();
+        const part = catalog.find(item=>text.includes(item.match));
+
+        if(part){
+            parts.push({
+                type:part.type,
+                name:part.name,
+                price:Math.round(prices[part.type]*multiplier)
+            });
+        }
+    });
+
+    return parts;
+}
 
  let count = Math.random() < 0.45 ? 0 :
              Math.random() < 0.75 ? 1 :
@@ -554,7 +606,7 @@ function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
   let problem = problems[rand(0,problems.length-1)];
   if(!defects.includes(problem)){
    defects.push(problem);
-  }
+  
  }
 
  return defects;
@@ -809,8 +861,8 @@ function startWorkshopRepair(id,type,task,cost,days){
  if(state.partsStock<1){notify("Нет запчастей! Сначала закупи комплект деталей.");return;}
  state.money-=cost;state.partsStock--;
  state.inventory=state.inventory.filter(x=>x.id!==id);
- const duration=Math.max(1,days-(state.workshopLevel>=3?1:0));
- state.workshopJobs.push({id:p.id,name:p.name,phone:p,task,type,cost,finishDay:state.day+duration});
+const finishAt = Date.now() + 15000;
+state.workshopJobs.push({id:p.id,name:p.name,phone:p,task,type,cost,finishAt:finishAt});
  closeModal();save();notify("Телефон принят в ремонт!");
 }
 function finishWorkshopJobs(){
