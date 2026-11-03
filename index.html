@@ -220,9 +220,9 @@ footer{text-align:center;color:#666477;font-size:11px;padding:35px}
 <main id="market">
  <div class="section-head">
   <h2>🔥 Горячие предложения</h2>
-  <span class="muted">Обновляются каждый день</span>
+  <span class="muted">Обновление через <b id="marketTimer">03:00</b> · 50 предложений</span>
  </div>
- <p class="catalog-note">📱 Каталог: 200 реальных моделей Apple, Samsung, Xiaomi, Google, OnePlus, Motorola, Sony и Huawei/Honor. Фото ищутся в Wikimedia Commons.</p>
+ <p class="catalog-note">📱 Телефоны от бюджетных до флагманов за 100 000–200 000 ₽. iPhone Duo — ультраредкая модель от 250 000 ₽. Фото загружаются из Wikimedia Commons; если фото модели нет, показывается индивидуальная иллюстрация.</p>
  <div class="grid" id="marketGrid"></div>
 </main>
 
@@ -316,7 +316,7 @@ const initialPhones = [
   ["iPhone 11", 16458, 21100, 79, "Хорошее"],
   ["iPhone 11 Pro", 19091, 24476, 79, "Отличное"],
   ["iPhone 11 Pro Max", 21066, 27008, 80, "Хорошее"],
-  ["iPhone SE (2020)", 6597942, 8458900, 82, "Отличное"],
+  ["iPhone SE (2020)", 10500, 16000, 82, "Отличное"],
   ["iPhone 12 mini", 19734, 25300, 97, "Хорошее"],
   ["iPhone 12", 19734, 25300, 97, "Хорошее"],
   ["iPhone 12 Pro", 22890, 29347, 82, "Хорошее"],
@@ -325,7 +325,7 @@ const initialPhones = [
   ["iPhone 13", 23010, 29500, 83, "Отличное"],
   ["iPhone 13 Pro", 26691, 34220, 87, "Отличное"],
   ["iPhone 13 Pro Max", 29452, 37760, 81, "Отличное"],
-  ["iPhone SE (2022)", 6604494, 8467300, 93, "Хорошее"],
+  ["iPhone SE (2022)", 15500, 23000, 93, "Хорошее"],
   ["iPhone 14", 26286, 33700, 80, "Среднее"],
   ["iPhone 14 Plus", 28914, 37070, 96, "Хорошее"],
   ["iPhone 14 Pro", 30491, 39092, 87, "Отличное"],
@@ -391,24 +391,24 @@ const initialPhones = [
   ["Samsung Galaxy A52", 23712, 30400, 96, "Среднее"],
   ["Samsung Galaxy A53", 24063, 30850, 97, "Среднее"],
   ["Samsung Galaxy A54", 24414, 31300, 84, "Отличное"],
-  ["Xiaomi Xiaomi Mi 10", 12480, 16000, 81, "Отличное"],
-  ["Xiaomi Xiaomi Mi 10T", 12480, 16000, 80, "Среднее"],
-  ["Xiaomi Xiaomi Mi 11", 13182, 16900, 91, "Хорошее"],
-  ["Xiaomi Xiaomi 11T", 13182, 16900, 86, "Отличное"],
-  ["Xiaomi Xiaomi 11T Pro", 26130, 33500, 80, "Среднее"],
-  ["Xiaomi Xiaomi 12", 13884, 17800, 92, "Хорошее"],
-  ["Xiaomi Xiaomi 12 Pro", 27300, 35000, 78, "Отличное"],
-  ["Xiaomi Xiaomi 12T", 13884, 17800, 93, "Отличное"],
-  ["Xiaomi Xiaomi 12T Pro", 27300, 35000, 96, "Среднее"],
-  ["Xiaomi Xiaomi 13", 14586, 18700, 96, "Хорошее"],
-  ["Xiaomi Xiaomi 13 Pro", 28470, 36500, 98, "Среднее"],
-  ["Xiaomi Xiaomi 13T", 14586, 18700, 94, "Отличное"],
-  ["Xiaomi Xiaomi 13T Pro", 28470, 36500, 89, "Хорошее"],
-  ["Xiaomi Xiaomi 14", 15288, 19600, 97, "Отличное"],
-  ["Xiaomi Xiaomi 14 Pro", 29640, 38000, 89, "Отличное"],
-  ["Xiaomi Xiaomi 14 Ultra", 41496, 53200, 85, "Отличное"],
-  ["Xiaomi Xiaomi 15", 15990, 20500, 94, "Среднее"],
-  ["Xiaomi Xiaomi 15 Ultra", 42900, 55000, 93, "Отличное"],
+  ["Xiaomi Mi 10", 12480, 16000, 81, "Отличное"],
+  ["Xiaomi Mi 10T", 12480, 16000, 80, "Среднее"],
+  ["Xiaomi Mi 11", 13182, 16900, 91, "Хорошее"],
+  ["Xiaomi 11T", 13182, 16900, 86, "Отличное"],
+  ["Xiaomi 11T Pro", 26130, 33500, 80, "Среднее"],
+  ["Xiaomi 12", 13884, 17800, 92, "Хорошее"],
+  ["Xiaomi 12 Pro", 27300, 35000, 78, "Отличное"],
+  ["Xiaomi 12T", 13884, 17800, 93, "Отличное"],
+  ["Xiaomi 12T Pro", 27300, 35000, 96, "Среднее"],
+  ["Xiaomi 13", 14586, 18700, 96, "Хорошее"],
+  ["Xiaomi 13 Pro", 28470, 36500, 98, "Среднее"],
+  ["Xiaomi 13T", 14586, 18700, 94, "Отличное"],
+  ["Xiaomi 13T Pro", 28470, 36500, 89, "Хорошее"],
+  ["Xiaomi 14", 15288, 19600, 97, "Отличное"],
+  ["Xiaomi 14 Pro", 29640, 38000, 89, "Отличное"],
+  ["Xiaomi 14 Ultra", 41496, 53200, 85, "Отличное"],
+  ["Xiaomi 15", 15990, 20500, 94, "Среднее"],
+  ["Xiaomi 15 Ultra", 42900, 55000, 93, "Отличное"],
   ["Xiaomi Redmi Note 9", 11778, 15100, 83, "Среднее"],
   ["Xiaomi Redmi Note 10", 12480, 16000, 81, "Хорошее"],
   ["Xiaomi Redmi Note 10 Pro", 24960, 32000, 81, "Среднее"],
@@ -453,33 +453,33 @@ const initialPhones = [
   ["Google Pixel 9 Pro", 33134, 42480, 82, "Отличное"],
   ["Google Pixel 9 Pro XL", 33134, 42480, 80, "Среднее"],
   ["Google Pixel 9a", 28080, 36000, 78, "Отличное"],
-  ["OnePlus OnePlus 8", 9360, 12000, 87, "Отличное"],
-  ["OnePlus OnePlus 8 Pro", 11044, 14160, 93, "Отличное"],
-  ["OnePlus OnePlus 8T", 9360, 12000, 92, "Среднее"],
-  ["OnePlus OnePlus 9", 12168, 15600, 80, "Среднее"],
-  ["OnePlus OnePlus 9 Pro", 14358, 18408, 95, "Среднее"],
-  ["OnePlus OnePlus 9R", 12168, 15600, 90, "Хорошее"],
-  ["OnePlus OnePlus 10 Pro", 17671, 22656, 86, "Отличное"],
-  ["OnePlus OnePlus 10T", 14976, 19200, 83, "Хорошее"],
-  ["OnePlus OnePlus 11", 17784, 22800, 81, "Хорошее"],
-  ["OnePlus OnePlus 11R", 17784, 22800, 80, "Хорошее"],
-  ["OnePlus OnePlus 12", 20592, 26400, 80, "Хорошее"],
-  ["OnePlus OnePlus 12R", 20592, 26400, 95, "Хорошее"],
-  ["OnePlus OnePlus 13", 23400, 30000, 91, "Хорошее"],
-  ["OnePlus OnePlus 13R", 23400, 30000, 90, "Отличное"],
-  ["OnePlus OnePlus Nord 2", 3510, 4500, 88, "Хорошее"],
-  ["OnePlus OnePlus Nord 3", 3510, 4500, 95, "Отличное"],
-  ["OnePlus OnePlus Nord 4", 3510, 4500, 85, "Среднее"],
-  ["OnePlus OnePlus Nord CE 3", 3510, 4500, 80, "Среднее"],
-  ["Motorola Motorola Edge 20", 3510, 4500, 82, "Среднее"],
-  ["Motorola Motorola Edge 20 Pro", 4387, 5625, 92, "Хорошее"],
-  ["Motorola Motorola Edge 30", 7020, 9000, 92, "Отличное"],
-  ["Motorola Motorola Edge 30 Pro", 8775, 11250, 81, "Среднее"],
-  ["Motorola Motorola Edge 40", 10530, 13500, 96, "Хорошее"],
-  ["Motorola Motorola Edge 40 Neo", 10530, 13500, 80, "Хорошее"],
-  ["Motorola Motorola Edge 50 Pro", 17550, 22500, 95, "Среднее"],
-  ["Motorola Motorola Edge 50 Ultra", 17550, 22500, 78, "Среднее"],
-  ["Motorola Motorola Edge 60 Pro", 21937, 28125, 80, "Отличное"],
+  ["OnePlus 8", 9360, 12000, 87, "Отличное"],
+  ["OnePlus 8 Pro", 11044, 14160, 93, "Отличное"],
+  ["OnePlus 8T", 9360, 12000, 92, "Среднее"],
+  ["OnePlus 9", 12168, 15600, 80, "Среднее"],
+  ["OnePlus 9 Pro", 14358, 18408, 95, "Среднее"],
+  ["OnePlus 9R", 12168, 15600, 90, "Хорошее"],
+  ["OnePlus 10 Pro", 17671, 22656, 86, "Отличное"],
+  ["OnePlus 10T", 14976, 19200, 83, "Хорошее"],
+  ["OnePlus 11", 17784, 22800, 81, "Хорошее"],
+  ["OnePlus 11R", 17784, 22800, 80, "Хорошее"],
+  ["OnePlus 12", 20592, 26400, 80, "Хорошее"],
+  ["OnePlus 12R", 20592, 26400, 95, "Хорошее"],
+  ["OnePlus 13", 23400, 30000, 91, "Хорошее"],
+  ["OnePlus 13R", 23400, 30000, 90, "Отличное"],
+  ["OnePlus Nord 2", 3510, 4500, 88, "Хорошее"],
+  ["OnePlus Nord 3", 3510, 4500, 95, "Отличное"],
+  ["OnePlus Nord 4", 3510, 4500, 85, "Среднее"],
+  ["OnePlus Nord CE 3", 3510, 4500, 80, "Среднее"],
+  ["Motorola Edge 20", 3510, 4500, 82, "Среднее"],
+  ["Motorola Edge 20 Pro", 4387, 5625, 92, "Хорошее"],
+  ["Motorola Edge 30", 7020, 9000, 92, "Отличное"],
+  ["Motorola Edge 30 Pro", 8775, 11250, 81, "Среднее"],
+  ["Motorola Edge 40", 10530, 13500, 96, "Хорошее"],
+  ["Motorola Edge 40 Neo", 10530, 13500, 80, "Хорошее"],
+  ["Motorola Edge 50 Pro", 17550, 22500, 95, "Среднее"],
+  ["Motorola Edge 50 Ultra", 17550, 22500, 78, "Среднее"],
+  ["Motorola Edge 60 Pro", 21937, 28125, 80, "Отличное"],
   ["Motorola Moto G30", 7020, 9000, 78, "Среднее"],
   ["Motorola Moto G32", 7722, 9900, 82, "Отличное"],
   ["Motorola Moto G54", 15444, 19800, 90, "Среднее"],
@@ -492,21 +492,36 @@ const initialPhones = [
   ["Sony Xperia 5 II", 19032, 24400, 79, "Отличное"],
   ["Sony Xperia 5 III", 19032, 24400, 81, "Среднее"],
   ["Sony Xperia 5 IV", 19032, 24400, 92, "Отличное"],
-  ["Huawei/Honor Huawei P30", 7800, 10000, 89, "Хорошее"],
-  ["Huawei/Honor Huawei P30 Pro", 9750, 12500, 84, "Отличное"],
-  ["Huawei/Honor Huawei P40", 12090, 15500, 94, "Хорошее"],
-  ["Huawei/Honor Huawei P40 Pro", 15112, 19375, 86, "Среднее"],
-  ["Huawei/Honor Huawei P50 Pro", 20475, 26250, 91, "Отличное"],
-  ["Huawei/Honor Huawei P60 Pro", 25837, 33125, 94, "Отличное"],
-  ["Huawei/Honor Huawei Mate 20 Pro", 4387, 5625, 92, "Хорошее"],
-  ["Huawei/Honor Huawei Mate 30 Pro", 9750, 12500, 78, "Среднее"],
-  ["Huawei/Honor Huawei Mate 40 Pro", 15112, 19375, 79, "Отличное"],
-  ["Huawei/Honor Huawei Mate 50 Pro", 20475, 26250, 86, "Хорошее"],
+  ["Huawei P30", 7800, 10000, 89, "Хорошее"],
+  ["Huawei P30 Pro", 9750, 12500, 84, "Отличное"],
+  ["Huawei P40", 12090, 15500, 94, "Хорошее"],
+  ["Huawei P40 Pro", 15112, 19375, 86, "Среднее"],
+  ["Huawei P50 Pro", 20475, 26250, 91, "Отличное"],
+  ["Huawei P60 Pro", 25837, 33125, 94, "Отличное"],
+  ["Huawei Mate 20 Pro", 4387, 5625, 92, "Хорошее"],
+  ["Huawei Mate 30 Pro", 9750, 12500, 78, "Среднее"],
+  ["Huawei Mate 40 Pro", 15112, 19375, 79, "Отличное"],
+  ["Huawei Mate 50 Pro", 20475, 26250, 86, "Хорошее"],
   ["Huawei/Honor Honor 50", 16380, 21000, 92, "Хорошее"],
   ["Huawei/Honor Honor 70", 24960, 32000, 93, "Отличное"],
   ["Huawei/Honor Honor 90", 33540, 43000, 86, "Отличное"],
   ["Huawei/Honor Honor 200", 80730, 103500, 91, "Среднее"],
-  ["Huawei/Honor Honor Magic5 Pro", 3510, 4500, 90, "Отличное"]
+  ["Huawei/Honor Honor Magic5 Pro", 35100, 45000, 90, "Отличное"],
+  ["iPhone 17 Pro Max", 120000, 160000, 97, "Отличное"],
+  ["iPhone Duo", 250000, 325000, 100, "Отличное"],
+  ["Samsung Galaxy Z Fold7", 140000, 190000, 96, "Отличное"],
+  ["Samsung Galaxy Z Flip7", 85000, 115000, 95, "Отличное"],
+  ["Samsung Galaxy S25 Ultra", 90000, 120000, 98, "Отличное"],
+  ["Xiaomi 15 Ultra", 80000, 105000, 97, "Отличное"],
+  ["Google Pixel 10 Pro XL", 90000, 125000, 96, "Отличное"],
+  ["Huawei Mate X6", 130000, 180000, 95, "Отличное"],
+  ["iPhone 17 Pro", 90000, 118000, 98, "Отличное"],
+  ["Samsung Galaxy Z Fold6 1TB", 95000, 125000, 96, "Отличное"],
+  ["Samsung Galaxy S25 Edge", 78000, 102000, 97, "Отличное"],
+  ["Google Pixel 10 Pro", 82000, 108000, 96, "Отличное"],
+  ["OnePlus 13 Pro", 75000, 99000, 95, "Отличное"],
+  ["Honor Magic7 Pro", 85000, 112000, 97, "Отличное"],
+  ["OnePlus 13", 65000, 88000, 96, "Отличное"]
 ];
 
 let state = JSON.parse(localStorage.getItem("dream_save")) || {
@@ -528,6 +543,12 @@ state.partsInventory = state.partsInventory || {};
 state.accessoryInventory = state.accessoryInventory || [];
 state.storeStock = state.storeStock || [];
 state.storeRefreshAt = state.storeRefreshAt || 0;
+state.marketRefreshAt = state.marketRefreshAt || 0;
+// Обновляем только витрины после обновления каталога; прогресс игрока сохраняется.
+state.market = [];
+state.marketRefreshAt = 0;
+state.storeStock = [];
+state.storeRefreshAt = 0;
 
 function save(){
  localStorage.setItem("dream_save",JSON.stringify(state));
@@ -536,10 +557,19 @@ function save(){
 function money(n){return Math.round(n).toLocaleString("ru-RU")+" ₽"}
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 
+function pickCatalogPhone(){
+ const premium = p => /iPhone Duo|17 Pro Max|Z Fold7|Z Flip7|S25 Ultra|15 Ultra|Pixel 10 Pro XL|Mate X6|OnePlus 13/i.test(p[0]);
+ const premiumPool=initialPhones.filter(premium);
+ const regularPool=initialPhones.filter(p=>!premium(p));
+ const roll=Math.random();
+ if(roll<0.012) return initialPhones.find(p=>p[0]==="iPhone Duo");
+ if(roll<0.09) return premiumPool.filter(p=>p[0]!=="iPhone Duo")[rand(0,premiumPool.filter(p=>p[0]!=="iPhone Duo").length-1)];
+ return regularPool[rand(0,regularPool.length-1)];
+}
 function createMarket(){
  state.market=[];
- for(let i=0;i<6;i++){
-  let p=initialPhones[rand(0,initialPhones.length-1)];
+ for(let i=0;i<50;i++){
+  let p=pickCatalogPhone();
   let discount=rand(70,105)/100;
   let risk=rand(1,100);
   state.market.push({
@@ -547,7 +577,7 @@ function createMarket(){
    name:p[0],
    imageUrl:null,
    imagePage:null,
-   price:Math.round(p[1]*discount),
+   price:p[0]==="iPhone Duo"?Math.max(250000,Math.round(p[1]*discount)):Math.round(p[1]*discount),
    value:p[2],
    battery:rand(65,100),
    condition:p[4],
@@ -556,6 +586,8 @@ function createMarket(){
    seller:["Александр","Максим","Дмитрий","Артём","Илья"][rand(0,4)]
   });
  }
+ state.marketRefreshAt=Date.now()+180000;
+ saveStoreOnly();
 }
 
 const accessoryCatalog = [
@@ -569,7 +601,7 @@ function createStoreStock(){
  const phones=initialPhones.slice();
  const stock=[];
  for(let i=0;i<25;i++){
-  const p=phones[rand(0,phones.length-1)];
+  const p=pickCatalogPhone();
   stock.push({id:"sp"+Date.now()+"_"+i,kind:"phone",name:p[0],price:Math.round(p[1]*rand(105,135)/100),value:p[2],condition:p[4],battery:rand(88,100),defects:null});
  }
  accessoryCatalog.forEach((a,i)=>stock.push({id:"sa"+Date.now()+"_"+i,kind:"accessory",name:a[0],price:a[1],value:a[2]}));
@@ -578,10 +610,17 @@ function createStoreStock(){
  saveStoreOnly();
 }
 function saveStoreOnly(){localStorage.setItem("dream_save",JSON.stringify(state));}
-function ensureStore(){if(!Array.isArray(state.storeStock)||state.storeStock.length!==50||!state.storeRefreshAt){createStoreStock();} }
+function ensureStore(){if(!Array.isArray(state.storeStock)||state.storeStock.length!==50||!state.storeRefreshAt||Date.now()>=state.storeRefreshAt){createStoreStock();} }
+function tickMarket(){
+ if(!Array.isArray(state.market)||state.market.length!==50||!state.marketRefreshAt||Date.now()>=state.marketRefreshAt)createMarket();
+ const left=Math.max(0,Math.ceil((state.marketRefreshAt-Date.now())/1000));
+ const timer=document.getElementById("marketTimer");
+ if(timer)timer.textContent=`${String(Math.floor(left/60)).padStart(2,"0")}:${String(left%60).padStart(2,"0")}`;
+}
 function renderStore(){
  const el=document.getElementById("storeGrid");if(!el)return;
- el.innerHTML=state.storeStock.map(item=>`<div class="phone"><div class="phone-art"><span class="tag">${item.kind==="phone"?"Смартфон":"Аксессуар"}</span><div class="photo-placeholder">${item.kind==="phone"?"📱":"🎧"}</div></div><h3>${item.name}</h3><div class="details"><span>Цена</span><b>${money(item.price)}</b></div><button class="btn" onclick="buyStoreItem('${item.id}')">Купить</button></div>`).join("")||'<div class="empty">Ассортимент обновляется…</div>';
+ el.innerHTML=state.storeStock.map(item=>`<div class="phone"><div class="phone-art ${item.kind==="phone"?"photo-art":""}"><span class="tag">${item.kind==="phone"?"Смартфон":"Аксессуар"}</span>${item.kind==="phone"?`<img class="phone-photo" id="phoneimg-${item.id}" alt="${item.name}" loading="lazy"><span class="photo-placeholder" id="phoneph-${item.id}">Загружаем изображение…</span>`:`<div class="photo-placeholder">🎧</div>`}</div><h3>${item.name}</h3><div class="details"><span>Цена</span><b>${money(item.price)}</b></div><button class="btn" onclick="buyStoreItem('${item.id}')">Купить</button></div>`).join("")||'<div class="empty">Ассортимент обновляется…</div>';
+ state.storeStock.filter(item=>item.kind==="phone").forEach(loadPhonePhoto);
 }
 function buyStoreItem(id){
  const item=state.storeStock.find(x=>x.id===id);if(!item)return;
@@ -626,51 +665,51 @@ function update(){
 
 const phoneImageCache = JSON.parse(localStorage.getItem("dream_phone_images") || "{}");
 const phoneImagePending = {};
+function cleanPhoneName(name){
+ return name.replace(/^Huawei\/Honor\s+/i,"").replace(/^Xiaomi\s+Xiaomi\s+/i,"Xiaomi ")
+            .replace(/^OnePlus\s+OnePlus\s+/i,"OnePlus ").replace(/^Motorola\s+Motorola\s+/i,"Motorola ").trim();
+}
+function phoneFallbackImage(name){
+ const safe=cleanPhoneName(name), duo=/iPhone Duo/i.test(safe);
+ const hue=(safe.split("").reduce((a,c)=>a+c.charCodeAt(0),0)*17)%360;
+ const label=safe.replace(/[<>&]/g,"");
+ const svg=duo
+ ? `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="220" viewBox="0 0 360 220"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="#a58aff"/><stop offset="1" stop-color="#25204a"/></linearGradient></defs><rect width="360" height="220" rx="24" fill="#101019"/><g transform="translate(112 22)"><rect width="62" height="176" rx="14" fill="url(#g)" stroke="#ddd" stroke-width="4"/><rect x="74" width="62" height="176" rx="14" fill="url(#g)" stroke="#ddd" stroke-width="4"/><path d="M68 8v160" stroke="#fff" stroke-opacity=".65" stroke-width="3"/><g fill="#171722" stroke="#aaa"><circle cx="17" cy="20" r="7"/><circle cx="37" cy="20" r="7"/><circle cx="91" cy="20" r="7"/><circle cx="111" cy="20" r="7"/></g></g><text x="180" y="211" fill="#fff" font-size="12" text-anchor="middle">DREAM · iPhone Duo concept</text></svg>`
+ : `<svg xmlns="http://www.w3.org/2000/svg" width="360" height="220" viewBox="0 0 360 220"><defs><linearGradient id="g" x2="1" y2="1"><stop stop-color="hsl(${hue} 75% 72%)"/><stop offset="1" stop-color="hsl(${(hue+75)%360} 65% 25%)"/></linearGradient></defs><rect width="360" height="220" rx="24" fill="#101019"/><rect x="145" y="16" width="70" height="185" rx="16" fill="url(#g)" stroke="#d8d8e5" stroke-width="4"/><rect x="152" y="24" width="56" height="169" rx="11" fill="#11131d" opacity=".45"/><g fill="#151521" stroke="#aaa"><circle cx="160" cy="39" r="7"/><circle cx="180" cy="39" r="7"/><circle cx="160" cy="59" r="7"/></g><text x="180" y="215" fill="#fff" font-size="11" text-anchor="middle">${label}</text></svg>`;
+ return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+}
 async function findCommonsPhoneImage(name){
  if(Object.prototype.hasOwnProperty.call(phoneImageCache,name)) return phoneImageCache[name];
  if(phoneImagePending[name]) return phoneImagePending[name];
  phoneImagePending[name]=(async()=>{
-   const queries=[`intitle:"${name}"`, `"${name}" smartphone`];
-   for(const q of queries){
-     try{
-       const api="https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch="+encodeURIComponent(q)+"&gsrlimit=10&prop=imageinfo&iiprop=url&iiurlwidth=520&format=json&origin=*";
-       const response=await fetch(api);
-       if(!response.ok) continue;
-       const data=await response.json();
-       const pages=Object.values(data.query?.pages||{});
-       const match=pages.find(x=>x.imageinfo?.[0]?.thumburl && /(phone|iphone|galaxy|pixel|xperia|oneplus|xiaomi|redmi|motorola|huawei|honor)/i.test(x.title||""));
-       if(match){
-         const result={url:match.imageinfo[0].thumburl,page:"https://commons.wikimedia.org/wiki/"+encodeURIComponent(match.title.replace(/ /g,"_"))};
-         phoneImageCache[name]=result;
-         localStorage.setItem("dream_phone_images",JSON.stringify(phoneImageCache));
-         return result;
-       }
-     }catch(e){}
-   }
-   phoneImageCache[name]=null;
-   localStorage.setItem("dream_phone_images",JSON.stringify(phoneImageCache));
-   return null;
+  const clean=cleanPhoneName(name), queries=[`"${clean}" smartphone`,`intitle:"${clean}"`];
+  for(const q of queries){
+   try{
+    const api="https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrnamespace=6&gsrsearch="+encodeURIComponent(q)+"&gsrlimit=20&prop=imageinfo&iiprop=url&iiurlwidth=520&format=json&origin=*";
+    const response=await fetch(api); if(!response.ok)continue;
+    const data=await response.json(), pages=Object.values(data.query?.pages||{});
+    const words=clean.toLowerCase().replace(/[^a-z0-9]+/g," ").split(" ").filter(w=>w.length>2);
+    const match=pages.find(x=>x.imageinfo?.[0]?.thumburl && words.some(w=>(x.title||"").toLowerCase().includes(w)));
+    if(match){
+     const result={url:match.imageinfo[0].thumburl,page:"https://commons.wikimedia.org/wiki/"+encodeURIComponent(match.title.replace(/ /g,"_"))};
+     phoneImageCache[name]=result;localStorage.setItem("dream_phone_images",JSON.stringify(phoneImageCache));return result;
+    }
+   }catch(e){}
+  }
+  phoneImageCache[name]=null;localStorage.setItem("dream_phone_images",JSON.stringify(phoneImageCache));return null;
  })();
- const result=await phoneImagePending[name];
- delete phoneImagePending[name];
- return result;
+ const result=await phoneImagePending[name];delete phoneImagePending[name];return result;
 }
 function loadPhonePhoto(phone){
- const img=document.getElementById("phoneimg-"+phone.id);
- const ph=document.getElementById("phoneph-"+phone.id);
- const credit=document.getElementById("phonecredit-"+phone.id);
- if(!img||!ph)return;
+ const img=document.getElementById("phoneimg-"+phone.id), ph=document.getElementById("phoneph-"+phone.id);
+ const credit=document.getElementById("phonecredit-"+phone.id);if(!img||!ph)return;
  const show=data=>{
-   if(!data||!data.url){ph.textContent="Фото этой модели не найдено";return;}
-   img.onload=()=>{img.style.display="block";ph.style.display="none";if(credit&&data.page){credit.href=data.page;credit.style.display="block";}};
-   img.onerror=()=>{ph.textContent="Фото временно недоступно";};
-   img.src=data.url;
+  img.onload=()=>{img.style.display="block";ph.style.display="none";if(credit&&data?.page){credit.href=data.page;credit.style.display="block";}};
+  img.onerror=()=>{img.onerror=null;img.src=phoneFallbackImage(phone.name);};
+  img.src=data?.url||phoneFallbackImage(phone.name);
  };
  if(phone.imageUrl){show({url:phone.imageUrl,page:phone.imagePage});return;}
- findCommonsPhoneImage(phone.name).then(data=>{
-   if(data){phone.imageUrl=data.url;phone.imagePage=data.page;show(data);}
-   else show(null);
- });
+ findCommonsPhoneImage(phone.name).then(data=>{if(data){phone.imageUrl=data.url;phone.imagePage=data.page;}show(data);});
 }
 
 function card(p,mode){
@@ -972,12 +1011,13 @@ function resetGame(){
  localStorage.removeItem("dream_save");location.reload();
 }
 
-if(!state.market.length || state.market.some(p=>!initialPhones.some(m=>m[0]===p.name)))createMarket();
+if(!Array.isArray(state.market) || state.market.length!==50 || state.market.some(p=>!initialPhones.some(m=>m[0]===p.name)) || !state.marketRefreshAt)createMarket();
 ensureStore();
 update();
 setInterval(processBuyers,20000);
-setInterval(()=>{tickStore();finishWorkshopJobs();renderWorkshop();},1000);
+setInterval(()=>{tickStore();tickMarket();finishWorkshopJobs();renderWorkshop();},1000);
 tickStore();
+tickMarket();
 // Telegram Mini App initialization is kept inside the game script.
 const tg = window.Telegram?.WebApp;
 if (tg) {
