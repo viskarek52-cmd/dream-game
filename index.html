@@ -509,6 +509,7 @@ let state = JSON.parse(localStorage.getItem("dream_save")) || {
  money:30000,profit:0,xp:0,rep:0,day:1,sales:0,buys:0,
  inventory:[],listings:[],shop:"DREAM STORE",market:[]
 };
+  window.gameState = state;
 // Миграция старых сохранений: добавляем новые поля, не стирая прогресс.
 state.shopLevel = state.shopLevel || 1;
 state.history = state.history || [];
