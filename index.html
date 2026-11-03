@@ -222,6 +222,7 @@ footer{text-align:center;color:#666477;font-size:11px;padding:35px}
   <h2>🔥 Горячие предложения</h2>
   <span class="muted">Обновляются каждый день</span>
  </div>
+ <p class="catalog-note">📱 Каталог: 200 реальных моделей Apple, Samsung, Xiaomi, Google, OnePlus, Motorola, Sony и Huawei/Honor. Фото ищутся в Wikimedia Commons.</p>
  <div class="grid" id="marketGrid"></div>
 </main>
 
@@ -238,6 +239,9 @@ footer{text-align:center;color:#666477;font-size:11px;padding:35px}
   <button class="btn secondary" onclick="renameShop()">Изменить название</button>
   <p class="muted">Твои объявления и выставленные на продажу телефоны.</p>
  </div>
+ <div class="card" style="margin:14px 0"><div class="section-head" style="margin:0"><h2>🛍️ Ассортимент магазина</h2><b id="storeTimer">Обновление через 03:00</b></div><p class="muted">50 товаров: смартфоны и аксессуары. Запчасти покупаются отдельно в мастерской.</p></div>
+ <div id="storeGrid" class="grid"></div>
+ <div class="section-head"><h2>📣 Мои объявления</h2></div>
  <div id="shopGrid" class="grid"></div>
 </main>
 
@@ -246,14 +250,14 @@ footer{text-align:center;color:#666477;font-size:11px;padding:35px}
  <div class="stats workshop-stats">
   <div class="stat"><small>🧰 Уровень мастерской</small><strong id="workshopLevel">1</strong><em>Навык ремонта</em></div>
   <div class="stat"><small>🛠️ Выполнено ремонтов</small><strong id="repairsDone">0</strong><em>Опыт мастера</em></div>
-  <div class="stat"><small>📦 Запчасти</small><strong id="partsCount">0</strong><em>Комплект деталей</em></div>
+  <div class="stat"><small>📦 Запчасти</small><strong id="partsCount">0</strong><em>Купленные детали</em></div>
   <div class="stat"><small>⏳ В работе</small><strong id="jobsCount">0</strong><em>Заказы в ремонте</em></div>
  </div>
  <div class="card workshop-intro">
   <h3>Как работает мастерская</h3>
   <p class="muted">1. Купи телефон с дефектом на рынке. 2. Проведи диагностику. 3. Выбери ремонт и оплати детали. 4. Дождись завершения работы и продай исправный телефон дороже.</p>
   <div class="phone-actions">
-   <button class="btn" onclick="buyParts()">📦 Закупить запчасти · 3 000 ₽</button>
+   <span class="muted">Запчасти покупаются отдельно для каждого телефона.</span>
    <button class="btn secondary" onclick="upgradeWorkshop()">⬆️ Улучшить мастерскую</button>
   </div>
  </div>
@@ -509,7 +513,6 @@ let state = JSON.parse(localStorage.getItem("dream_save")) || {
  money:30000,profit:0,xp:0,rep:0,day:1,sales:0,buys:0,
  inventory:[],listings:[],shop:"DREAM STORE",market:[]
 };
-  window.gameState = state;
 // Миграция старых сохранений: добавляем новые поля, не стирая прогресс.
 state.shopLevel = state.shopLevel || 1;
 state.history = state.history || [];
@@ -517,6 +520,14 @@ state.taskDay = state.taskDay || state.day || 1;
 state.taskProgress = state.taskProgress || {buy:0,sell:0,profit:0};
 state.dailyEvent = state.dailyEvent || "На рынке всё спокойно. Удачных сделок!";
 state.dailyDemandBonus = Number.isFinite(state.dailyDemandBonus) ? state.dailyDemandBonus : 0;
+state.workshopJobs = state.workshopJobs || [];
+state.workshopLevel = state.workshopLevel || 1;
+state.workshopXp = state.workshopXp || 0;
+state.repairsDone = state.repairsDone || 0;
+state.partsInventory = state.partsInventory || {};
+state.accessoryInventory = state.accessoryInventory || [];
+state.storeStock = state.storeStock || [];
+state.storeRefreshAt = state.storeRefreshAt || 0;
 
 function save(){
  localStorage.setItem("dream_save",JSON.stringify(state));
@@ -525,100 +536,12 @@ function save(){
 function money(n){return Math.round(n).toLocaleString("ru-RU")+" ₽"}
 function rand(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 
-  function generateDefects(battery){
- const problems = [
-  "🔋 Требуется замена аккумулятора",
-  "📱 Требуется замена экрана",
-  "📸 Неисправна основная камера",
-  "🤳 Неисправна фронтальная камера",
-  "🔌 Не работает разъём зарядки",
-  "🔊 Неисправен динамик",
-  "🎤 Не работает микрофон",
-  "🔘 Неисправны кнопки",
-  "📡 Проблемы с сетью",
-  "⚡ Неисправна материнская плата",
-  "💧 Следы попадания влаги"
- ];function getPhoneParts(phone){
-    const defects = phone.defects || [];
-    const parts = [];
-
-    const catalog = [
-        {match:"аккумулятор",type:"battery",name:"Аккумулятор"},
-        {match:"экран",type:"screen",name:"Дисплей"},
-        {match:"камера",type:"camera",name:"Камера"},
-        {match:"разъём зарядки",type:"charging",name:"Разъём зарядки"},
-        {match:"динамик",type:"speaker",name:"Динамик"},
-        {match:"микрофон",type:"microphone",name:"Микрофон"},
-        {match:"кнопки",type:"buttons",name:"Кнопки"},
-        {match:"сетью",type:"network",name:"Модуль связи"},
-        {match:"материнская плата",type:"board",name:"Материнская плата"},
-        {match:"влаги",type:"water",name:"Восстановление после влаги"}
-    ];
-
-    const name = phone.name.toLowerCase();
-
-    let multiplier = 1;
-    if(name.includes("iphone")) multiplier = 1.8;
-    else if(name.includes("samsung")) multiplier = 1.5;
-    else if(name.includes("huawei")) multiplier = 1.3;
-    else if(name.includes("xiaomi")) multiplier = 1.1;
-
-    const prices = {
-        battery:2500,
-        screen:6000,
-        camera:4000,
-        charging:1500,
-        speaker:1200,
-        microphone:1000,
-        buttons:900,
-        network:3500,
-        board:8000,
-        water:3000
-    };
-
-    defects.forEach(defect=>{
-        const text = defect.toLowerCase();
-        const part = catalog.find(item=>text.includes(item.match));
-
-        if(part){
-            parts.push({
-                type:part.type,
-                name:part.name,
-                price:Math.round(prices[part.type]*multiplier)
-            });
-        }
-    });
-
-    return parts;
-}
-
- let count = Math.random() < 0.45 ? 0 :
-             Math.random() < 0.75 ? 1 :
-             Math.random() < 0.9 ? 2 : 3;
-
- let defects = [];
-
- if(battery < 65){
-  defects.push("🔋 Требуется замена аккумулятора");
- }
-
- while(defects.length < count){
-  let problem = problems[rand(0,problems.length-1)];
-  if(!defects.includes(problem)){
-   defects.push(problem);
-  
- }
-
- return defects;
-}
-function createMarket(){                      
+function createMarket(){
  state.market=[];
  for(let i=0;i<6;i++){
   let p=initialPhones[rand(0,initialPhones.length-1)];
   let discount=rand(70,105)/100;
   let risk=rand(1,100);
-   let battery=rand(35,100);
-   let defects=generateDefects(battery);
   state.market.push({
    id:Date.now()+i+rand(0,99999),
    name:p[0],
@@ -626,15 +549,56 @@ function createMarket(){
    imagePage:null,
    price:Math.round(p[1]*discount),
    value:p[2],
-   battery:battery,
+   battery:rand(65,100),
    condition:p[4],
-   defects:defects.length ? defects : null,
+   defects:risk>84?["Неисправная камера","Проблема с экраном","Слабый аккумулятор"][rand(0,2)]:null,
    locked:risk>96,
    seller:["Александр","Максим","Дмитрий","Артём","Илья"][rand(0,4)]
   });
  }
 }
-state.workshopJobs = state.workshopJobs || [];
+
+const accessoryCatalog = [
+ ["Чехол силиконовый",490,990],["Чехол противоударный",890,1590],["Защитное стекло",290,790],["Стекло приватное",590,1190],["Плёнка гидрогелевая",390,890],
+ ["Зарядка USB-C 20W",990,1790],["Зарядка USB-C 30W",1490,2490],["Кабель USB-C",390,790],["Кабель Lightning",490,990],["Беспроводная зарядка",1690,2990],
+ ["Наушники проводные",590,1190],["Наушники TWS",1990,3490],["Пауэрбанк 10 000 мАч",1890,3290],["Пауэрбанк 20 000 мАч",2790,4490],["Автомобильный держатель",690,1290],
+ ["Автомобильная зарядка",590,1090],["Попсокет",290,590],["Кольцо-держатель",350,690],["Сумка для телефона",790,1490],["Набор для чистки",390,790],
+ ["Адаптер USB-C — USB-A",350,690],["Переходник Lightning",590,1090],["Карта памяти 64 ГБ",890,1590],["Карта памяти 128 ГБ",1390,2290],["OTG-переходник",390,790]
+];
+function createStoreStock(){
+ const phones=initialPhones.slice();
+ const stock=[];
+ for(let i=0;i<25;i++){
+  const p=phones[rand(0,phones.length-1)];
+  stock.push({id:"sp"+Date.now()+"_"+i,kind:"phone",name:p[0],price:Math.round(p[1]*rand(105,135)/100),value:p[2],condition:p[4],battery:rand(88,100),defects:null});
+ }
+ accessoryCatalog.forEach((a,i)=>stock.push({id:"sa"+Date.now()+"_"+i,kind:"accessory",name:a[0],price:a[1],value:a[2]}));
+ state.storeStock=stock.sort(()=>Math.random()-.5).slice(0,50);
+ state.storeRefreshAt=Date.now()+180000;
+ saveStoreOnly();
+}
+function saveStoreOnly(){localStorage.setItem("dream_save",JSON.stringify(state));}
+function ensureStore(){if(!Array.isArray(state.storeStock)||state.storeStock.length!==50||!state.storeRefreshAt){createStoreStock();} }
+function renderStore(){
+ const el=document.getElementById("storeGrid");if(!el)return;
+ el.innerHTML=state.storeStock.map(item=>`<div class="phone"><div class="phone-art"><span class="tag">${item.kind==="phone"?"Смартфон":"Аксессуар"}</span><div class="photo-placeholder">${item.kind==="phone"?"📱":"🎧"}</div></div><h3>${item.name}</h3><div class="details"><span>Цена</span><b>${money(item.price)}</b></div><button class="btn" onclick="buyStoreItem('${item.id}')">Купить</button></div>`).join("")||'<div class="empty">Ассортимент обновляется…</div>';
+}
+function buyStoreItem(id){
+ const item=state.storeStock.find(x=>x.id===id);if(!item)return;
+ if(state.money<item.price){notify("Недостаточно денег!");return;}
+ state.money-=item.price;
+ if(item.kind==="phone"){
+  state.inventory.push({...item,id:Date.now()+rand(1,999999),cost:item.price,imageUrl:null,diagnosed:false});state.buys++;state.xp+=10;
+ }else state.accessoryInventory.push({...item,boughtAt:Date.now()});
+ state.storeStock=state.storeStock.filter(x=>x.id!==id);
+ save();notify(item.name+" куплен!");
+}
+function tickStore(){
+ if(Date.now()>=state.storeRefreshAt)createStoreStock();
+ const left=Math.max(0,Math.ceil((state.storeRefreshAt-Date.now())/1000));
+ const timer=document.getElementById("storeTimer");if(timer)timer.textContent=`Обновление через ${String(Math.floor(left/60)).padStart(2,"0")}:${String(left%60).padStart(2,"0")}`;
+}
+
 function update(){
  document.getElementById("balance").textContent=money(state.money);
  document.getElementById("capital").textContent=money(state.money);
@@ -652,11 +616,11 @@ function update(){
  document.getElementById("xpText").textContent=(state.xp%100)+" / 100 XP";
  document.getElementById("workshopLevel").textContent=state.workshopLevel;
  document.getElementById("repairsDone").textContent=state.repairsDone;
- document.getElementById("partsCount").textContent=state.partsStock;
- document.getElementById("jobsCount").textContent=(state.workshopJobs || []).length;
+ document.getElementById("partsCount").textContent=Object.values(state.partsInventory||{}).reduce((a,b)=>a+b,0);
+ document.getElementById("jobsCount").textContent=(state.workshopJobs||[]).length;
  document.getElementById("profileName").textContent=
   state.xp>=500?"Магнат ресейла":state.xp>=200?"Опытный перекуп":"Начинающий перекуп";
- renderMarket();renderInventory();renderShop();renderWorkshop();
+ renderMarket();renderInventory();renderShop();renderStore();renderWorkshop();
 }
 
 
@@ -692,74 +656,23 @@ async function findCommonsPhoneImage(name){
  return result;
 }
 function loadPhonePhoto(phone){
- const img = document.getElementById("phoneimg-" + phone.id);
- const ph = document.getElementById("phoneph-" + phone.id);
-
- if(!img || !ph) return;
-
- const name = phone.name.toLowerCase();
-
- const photos = [
-  {
-   match: "iphone 13",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_13.jpg"
-  },
-  {
-   match: "iphone 14",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_14_20240225.jpg"
-  },
-  {
-   match: "iphone 15",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Apple_iPhone_15.jpg"
-  },
-  {
-   match: "iphone 16",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/IPhone_16_Pro_series.jpg"
-  },
-  {
-   match: "samsung galaxy s22",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/SamsungGalaxyS22.png"
-  },
-  {
-   match: "samsung galaxy s23",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Galaxy_s23.jpg"
-  },
-  {
-   match: "samsung galaxy s24",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Samsung_Galaxy_S24.jpg"
-  },
-  {
-   match: "xiaomi 13",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Xiaomi_13_front.jpg"
-  },
-  {
-   match: "google pixel 8",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Google_Pixel_8_back_%28Obsidian%29.svg"
-  },
-  {
-   match: "huawei p30 pro",
-   url: "https://commons.wikimedia.org/wiki/Special:FilePath/Huawei_P30_Pro.jpg"
-  }
- ];
-
- const found = photos.find(item => name.includes(item.match));
-
- if(!found){
-  ph.textContent = "Фото скоро появится";
-  return;
- }
-
- img.onload = () => {
-  img.style.display = "block";
-  ph.style.display = "none";
+ const img=document.getElementById("phoneimg-"+phone.id);
+ const ph=document.getElementById("phoneph-"+phone.id);
+ const credit=document.getElementById("phonecredit-"+phone.id);
+ if(!img||!ph)return;
+ const show=data=>{
+   if(!data||!data.url){ph.textContent="Фото этой модели не найдено";return;}
+   img.onload=()=>{img.style.display="block";ph.style.display="none";if(credit&&data.page){credit.href=data.page;credit.style.display="block";}};
+   img.onerror=()=>{ph.textContent="Фото временно недоступно";};
+   img.src=data.url;
  };
+ if(phone.imageUrl){show({url:phone.imageUrl,page:phone.imagePage});return;}
+ findCommonsPhoneImage(phone.name).then(data=>{
+   if(data){phone.imageUrl=data.url;phone.imagePage=data.page;show(data);}
+   else show(null);
+ });
+}
 
- img.onerror = () => {
-  ph.textContent = "Фото недоступно";
- };
-
- img.src = found.url;
-};
 function card(p,mode){
  let html=`<div class="phone">
  <div class="phone-art photo-art"><span class="tag">${p.condition}</span><img class="phone-photo" id="phoneimg-${p.id}" alt="${p.name}" loading="lazy"><span class="photo-placeholder" id="phoneph-${p.id}">Ищем реальное фото…</span></div>
@@ -802,92 +715,41 @@ function renderShop(){
 
 
 function workshopIssue(phone){
- if(phone.defects) return phone.defects;
- if(phone.battery<75) return "Сильно изношенный аккумулятор";
- if(phone.condition==="Среднее") return "Износ корпуса и мелкие повреждения";
+ if(Array.isArray(phone.defects))return phone.defects.join(", ");
+ if(phone.defects)return phone.defects;
+ if(phone.battery<75)return "Требуется замена аккумулятора";
+ if(phone.condition==="Среднее")return "Износ корпуса и мелкие повреждения";
  return null;
 }
+function partNeeds(phone){
+ const defects=Array.isArray(phone.defects)?phone.defects:(phone.defects?[phone.defects]:[]);
+ if(phone.battery<75&&!defects.some(x=>/аккумулятор/i.test(x)))defects.push("Требуется замена аккумулятора");
+ const rules=[
+  [/аккумулятор|батаре/i,"battery","Аккумулятор",2500],[/экран|дисплей/i,"screen","Дисплей",6000],[/камера/i,"camera","Камера",4000],
+  [/разъём зарядки/i,"charging","Разъём зарядки",1500],[/динамик/i,"speaker","Динамик",1200],[/микрофон/i,"microphone","Микрофон",1000],
+  [/кнопки/i,"buttons","Кнопки",900],[/сетью/i,"network","Модуль связи",3500],[/материнская плата/i,"board","Материнская плата",8000],[/влаги/i,"water","Восстановление после влаги",3000],
+  [/корпус|повреждения/i,"body","Корпус",1800]
+ ];
+ const n=phone.name.toLowerCase();const mult=n.includes("iphone")?1.8:n.includes("samsung")?1.5:n.includes("huawei")||n.includes("honor")?1.3:n.includes("xiaomi")?1.1:1;
+ const result=[];defects.forEach(d=>{const rule=rules.find(r=>r[0].test(d));if(rule&&!result.some(x=>x.type===rule[1]))result.push({type:rule[1],name:rule[2],price:Math.round(rule[3]*mult)});});
+ if(!result.length)result.push({type:"battery",name:"Профилактический аккумулятор",price:Math.round(1800*mult)});
+ return result;
+}
+function partKey(phone,part){return phone.name+"::"+part.type;}
 function renderWorkshop(){
- const grid=document.getElementById("workshopGrid");
- if(!grid)return;
- grid.innerHTML=state.inventory.map(p=>{
-   const diagnosed=p.diagnosed===true;
-   const issue=diagnosed?(workshopIssue(p)||"Критичных неисправностей не найдено"):"Не проверен";
-   return `<div class="phone">
-    <div class="phone-art photo-art"><span class="tag">${p.condition}</span>
-     <img class="phone-photo" id="phoneimg-${p.id}" alt="${p.name}" loading="lazy">
-     <span class="photo-placeholder" id="phoneph-${p.id}">Фото модели</span>
-    </div>
-    <h3>${p.name}</h3>
-    <div class="details"><span>🔋 Батарея</span><b>${p.battery}%</b></div>
-    <div class="details"><span>🩺 Диагноз</span><b>${issue}</b></div>
-    <div class="details"><span>💰 Рыночная цена</span><b>${money(p.value)}</b></div>
-    ${diagnosed?`<button class="btn" onclick="openRepairOptions(${p.id})">🔧 Выбрать ремонт</button>`:`<button class="btn" onclick="diagnosePhone(${p.id})">🔍 Провести диагностику · 300 ₽</button>`}
-   </div>`;
- }).join("")||'<div class="empty">В мастерской пока нет устройств. Купи телефон и отправь его на диагностику.</div>';
- state.inventory.forEach(loadPhonePhoto);
- const jobs=document.getElementById("workshopJobs");
- jobs.innerHTML=state.workshopJobs.map(j=>`<div class="list-row">
-   <div><strong>${j.name} — ${j.task}</strong><small>Готовность: через ${Math.max(0,j.finishDay-state.day)} дн. · Стоимость: ${money(j.cost)}</small></div>
-   <span class="muted">🔧 В работе</span>
-  </div>`).join("")||'<div class="empty">Очередь пуста. Выбери телефон и начни первый ремонт.</div>';
+ const grid=document.getElementById("workshopGrid");if(!grid)return;
+ grid.innerHTML=state.inventory.map(p=>{const diagnosed=p.diagnosed===true;const issue=diagnosed?(workshopIssue(p)||"Критичных неисправностей не найдено"):"Не проверен";return `<div class="phone"><div class="phone-art"><span class="tag">${p.condition}</span><div class="photo-placeholder">📱</div></div><h3>${p.name}</h3><div class="details"><span>🔋 Батарея</span><b>${p.battery}%</b></div><div class="details"><span>🩺 Диагноз</span><b>${issue}</b></div><div class="details"><span>💰 Рыночная цена</span><b>${money(p.value)}</b></div>${diagnosed?`<button class="btn" onclick="openRepairOptions(${p.id})">🔧 Выбрать ремонт</button>`:`<button class="btn" onclick="diagnosePhone(${p.id})">🔍 Провести диагностику · 300 ₽</button>`}</div>`;}).join("")||'<div class="empty">В мастерской пока нет устройств. Купи телефон и отправляйся на диагностику.</div>';
+ const jobs=document.getElementById("workshopJobs");jobs.innerHTML=state.workshopJobs.map(j=>`<div class="list-row"><div><strong>${j.name} — ${j.task}</strong><small>Осталось: ${Math.max(0,Math.ceil((j.finishAt-Date.now())/1000))} сек.</small></div><span>🔧 В работе</span></div>`).join("")||'<div class="empty">Очередь пуста.</div>';
 }
-function diagnosePhone(id){
- const p=state.inventory.find(x=>x.id===id); if(!p)return;
- if(state.money<300){notify("Нужно 300 ₽ на диагностику");return;}
- state.money-=300;p.diagnosed=true;
- if(!p.defects && p.battery<75)p.defects="Изношенный аккумулятор";
- if(!p.defects && p.condition==="Среднее")p.defects="Повреждения корпуса";
- state.xp+=3;save();notify("Диагностика завершена!");
-}
+function diagnosePhone(id){const p=state.inventory.find(x=>x.id===id);if(!p)return;if(state.money<300){notify("Нужно 300 ₽ на диагностику");return;}state.money-=300;p.diagnosed=true;if(!p.defects&&p.battery<75)p.defects=["Требуется замена аккумулятора"];if(!p.defects&&p.condition==="Среднее")p.defects=["Износ корпуса и мелкие повреждения"];if(!p.defects)p.defects=[];state.xp+=3;save();notify("Диагностика завершена!");}
 function openRepairOptions(id){
- const p=state.inventory.find(x=>x.id===id);if(!p)return;
- const issue=workshopIssue(p);
- let options=[];
- if(issue && /экран|дисплей/i.test(issue)) options=[["screen","Замена дисплея",6500,2]];
- else if(issue && /камера/i.test(issue)) options=[["camera","Ремонт камеры",3500,1]];
- else if(issue && /аккумулятор|батаре/i.test(issue)) options=[["battery","Замена аккумулятора",2800,1]];
- else if(issue && /корпус|царап|повреж/i.test(issue)) options=[["body","Восстановление корпуса",2200,1]];
- else if(issue) options=[["board","Ремонт платы",7500,2]];
- else options=[["battery","Профилактика и проверка аккумулятора",1800,1],["body","Косметическое восстановление",1500,1]];
- openModal(`<h2>🔧 Заказ-наряд</h2><p><b>${p.name}</b></p><p>Диагноз: ${issue||"Серьёзных дефектов нет"}</p>
-  <p class="muted">Запчасти учитываются в цене ремонта. Улучшенная мастерская сокращает время работ.</p>
-  ${options.map(o=>`<button class="btn" onclick="startWorkshopRepair(${id},'${o[0]}','${o[1]}',${o[2]},${o[3]})">${o[1]} · ${money(o[2])} · ${o[3]} дн.</button>`).join("")}
-  <button class="btn secondary" onclick="closeModal()">Отмена</button>`);
+ const p=state.inventory.find(x=>x.id===id);if(!p)return;const parts=partNeeds(p);const mult=p.name.toLowerCase().includes("iphone")?1.8:p.name.toLowerCase().includes("samsung")?1.5:p.name.toLowerCase().includes("xiaomi")?1.1:1.3;
+ const owned=parts.filter(part=>(state.partsInventory[partKey(p,part)]||0)>0);const missing=parts.filter(part=>!owned.includes(part));
+ openModal(`<h2>🔧 Заказ-наряд</h2><p><b>${p.name}</b></p><p>Необходимые детали:</p>${parts.map(part=>`<div class="details"><span>${part.name} ${state.partsInventory[partKey(p,part)]?"✅ Есть":"❌ Нет"}</span><b>${money(part.price)}</b></div><button class="btn secondary" onclick="buySpecificPart(${id},'${part.type}')">Купить ${part.name}</button>`).join("")}<p class="muted">Для начала ремонта нужны все перечисленные детали. Работа занимает 15 секунд.</p><button class="btn" ${missing.length?"disabled":""} onclick="startWorkshopRepair(${id})">Начать ремонт</button><button class="btn secondary" onclick="closeModal()">Закрыть</button>`);
 }
-function startWorkshopRepair(id,type,task,cost,days){
- const p=state.inventory.find(x=>x.id===id);if(!p)return;
- if(state.money<cost){notify("Не хватает денег на ремонт");return;}
- if(state.partsStock<1){notify("Нет запчастей! Сначала закупи комплект деталей.");return;}
- state.money-=cost;state.partsStock--;
- state.inventory=state.inventory.filter(x=>x.id!==id);
-const finishAt = Date.now() + 15000;
-state.workshopJobs.push({id:p.id,name:p.name,phone:p,task,type,cost,finishAt:finishAt});
- closeModal();save();notify("Телефон принят в ремонт!");
-}
-function finishWorkshopJobs(){
- const completed=[];
- state.workshopJobs=state.workshopJobs.filter(job=>{
-   if(job.finishDay>state.day)return true;
-   const p=job.phone;
-   p.defects=null;p.diagnosed=true;
-   if(job.type==="battery")p.battery=Math.max(p.battery,95);
-   if(job.type==="screen")p.condition="Хорошее";
-   if(job.type==="body" && p.condition==="Среднее")p.condition="Хорошее";
-   p.cost=(p.cost||p.price||0)+job.cost;
-   p.value=Math.round(p.value*1.10);
-   p.repairQuality=state.workshopLevel>=3?"Профессиональный":"Стандартный";
-   state.inventory.push(p);
-   state.repairsDone++;state.workshopXp+=20;state.xp+=20;state.rep+=1;
-   if(state.workshopXp>=100){state.workshopXp-=100;state.workshopLevel++;notify("🏆 Уровень мастерской повышен!");}
-   completed.push(job.name);return false;
- });
- completed.forEach(n=>notify("🔧 Ремонт завершён: "+n));
-}
-function buyParts(){
- if(state.money<3000){notify("Нужно 3 000 ₽ на комплект запчастей");return;}
- state.money-=3000;state.partsStock+=3;save();notify("📦 Закуплено 3 комплекта запчастей");
-}
+function buySpecificPart(id,type){const p=state.inventory.find(x=>x.id===id);if(!p)return;const part=partNeeds(p).find(x=>x.type===type);if(!part)return;if(state.money<part.price){notify("Недостаточно денег на эту деталь");return;}state.money-=part.price;const key=partKey(p,part);state.partsInventory[key]=(state.partsInventory[key]||0)+1;save();openRepairOptions(id);notify(part.name+" куплена!");}
+function startWorkshopRepair(id){const p=state.inventory.find(x=>x.id===id);if(!p)return;const parts=partNeeds(p);if(parts.some(part=>(state.partsInventory[partKey(p,part)]||0)<1)){notify("Сначала купи все необходимые детали");return;}parts.forEach(part=>state.partsInventory[partKey(p,part)]--);state.inventory=state.inventory.filter(x=>x.id!==id);state.workshopJobs.push({id:p.id,name:p.name,phone:p,parts,finishAt:Date.now()+15000});closeModal();save();notify("Телефон принят в ремонт на 15 секунд!");}
+function finishWorkshopJobs(){const done=[];state.workshopJobs=state.workshopJobs.filter(job=>{if(job.finishAt>Date.now())return true;const p=job.phone;p.defects=[];p.diagnosed=true;p.battery=Math.max(p.battery||0,95);p.condition="Хорошее";p.cost=(p.cost||p.price||0)+job.parts.reduce((sum,x)=>sum+x.price,0);p.value=Math.round(p.value*1.10);p.repairQuality=state.workshopLevel>=3?"Профессиональный":"Стандартный";state.inventory.push(p);state.repairsDone++;state.workshopXp=(state.workshopXp||0)+20;state.xp+=20;state.rep++;if(state.workshopXp>=100){state.workshopXp-=100;state.workshopLevel++;notify("🏆 Уровень мастерской повышен!");}done.push(job.name);return false;});done.forEach(n=>notify("🔧 Ремонт завершён: "+n));if(done.length)save();}
 function upgradeWorkshop(){
  const cost=state.workshopLevel*12000;
  if(state.workshopLevel>=5){notify("Мастерская уже максимального уровня");return;}
@@ -895,7 +757,7 @@ function upgradeWorkshop(){
  state.money-=cost;state.workshopLevel++;save();notify("Мастерская улучшена до уровня "+state.workshopLevel+"!");
 }
 
-window.showTab = function(tab,btn){
+function showTab(tab,btn){
  document.querySelectorAll("main").forEach(x=>x.classList.add("hidden"));
  document.getElementById(tab).classList.remove("hidden");
  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
@@ -1111,8 +973,11 @@ function resetGame(){
 }
 
 if(!state.market.length || state.market.some(p=>!initialPhones.some(m=>m[0]===p.name)))createMarket();
+ensureStore();
 update();
 setInterval(processBuyers,20000);
+setInterval(()=>{tickStore();finishWorkshopJobs();renderWorkshop();},1000);
+tickStore();
 // Telegram Mini App initialization is kept inside the game script.
 const tg = window.Telegram?.WebApp;
 if (tg) {
